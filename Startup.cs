@@ -68,33 +68,51 @@ namespace Middleware
             app.UseWhen(context => context.Request.Path.StartsWithSegments("/use-when"),
                 branch =>
                 {
-                    branch.Use(async (context, next) =>
+                    //Works
+                    //branch.Use(async (context, next) =>
+                    //{
+                    //    if (context.Request.Path.StartsWithSegments("/use-when"))
+                    //    {
+                    //        await context.Response.WriteAsync("Request terminated by use-when middleware");
+                    //    }
+                    //    else
+                    //    {
+                    //        await next();
+                    //    }
+                    //});
+
+                    //Run is better for Short-circuiting
+                    branch.Run(async (context) =>
                     {
-                        if (context.Request.Path.StartsWithSegments("/use-when"))
-                        {
-                            await context.Response.WriteAsync("Request terminated by use-when middleware");
-                        }
-                        else
-                        {
-                            await next();
-                        }
+                        await context.Response.WriteAsync("Request terminated by use-when middleware");
                     });
                 });
 
-            //Map - More focused on conditionally executing middleware based on Request Path. - Need to troubleshoot this
-            app.Map("/map-test",
+            //Map - More focused on conditionally executing middleware based on Request Path. Problematic code
+            //app.Map("/map-test",
+            //    branch =>
+            //    {
+            //        branch.Use(async (context, next) =>
+            //        {
+            //            if (context.Request.Path.StartsWithSegments("/map-test"))
+            //            {
+            //                await context.Response.WriteAsync("Request terminated by map middleware");
+            //            }
+            //            else
+            //            {
+            //                await next();
+            //            }
+            //        });
+            //    });
+
+            //Solved
+            // When using Use inside Map, it doesn't automatically continue the pipeline for the original request; instead, it essentially replaces the remainder of the pipeline for that branch.
+            app.Map("/map",
                 branch =>
                 {
-                    branch.Use(async (context, next) =>
+                    branch.Run(async (context) =>
                     {
-                        if (context.Request.Path.StartsWithSegments("/map-test"))
-                        {
-                            await context.Response.WriteAsync("Request terminated by map middleware");
-                        }
-                        else
-                        {
-                            await next();
-                        }
+                        await context.Response.WriteAsync("Request terminated by map middleware");
                     });
                 });
 
@@ -116,10 +134,10 @@ namespace Middleware
                 });
 
             //Enabling this will terminate all requests here if route is /ok or /internal-server-error
-            app.Run(async context =>
-            {
-                await context.Response.WriteAsync("Request terminates here");
-            });
+            //app.Run(async context =>
+            //{
+            //    await context.Response.WriteAsync("Request terminated at Run middleware");
+            //});
 
             app.UseEndpoints(app =>
                 {
