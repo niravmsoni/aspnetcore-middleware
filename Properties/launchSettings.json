@@ -10,14 +10,14 @@
   },
   "profiles": {
     "Middleware": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "weatherforecast",
-      "applicationUrl": "https://localhost:7089;http://localhost:5089",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+        "commandName": "Project",
+        "dotnetRunMessages": true,
+        "launchBrowser": true,
+        "launchUrl": "ok",
+        "applicationUrl": "https://localhost:7089;http://localhost:5089",
+        "environmentVariables": {
+            "ASPNETCORE_ENVIRONMENT": "Development"
+        }
     },
     "IIS Express": {
       "commandName": "IISExpress",
